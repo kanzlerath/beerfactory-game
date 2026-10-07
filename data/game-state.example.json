@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "teams": [],
+  "players": [],
+  "answers": {},
+  "round": {
+    "questionId": null,
+    "status": "idle",
+    "startedAt": null,
+    "endsAt": null,
+    "eligiblePlayerIds": [],
+    "results": []
+  }
+}

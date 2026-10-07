@@ -1,0 +1,23 @@
+[
+  {
+    "id": "q1",
+    "text": "Сколько лет BeerFactory?",
+    "options": ["8", "10", "12", "15"],
+    "correctOption": 2,
+    "durationSec": 20
+  },
+  {
+    "id": "q2",
+    "text": "Какой ингредиент отвечает за горечь в пиве?",
+    "options": ["Солод", "Хмель", "Дрожжи", "Вода"],
+    "correctOption": 1,
+    "durationSec": 20
+  },
+  {
+    "id": "q3",
+    "text": "Какой стиль традиционно ассоциируется с тёмным обжаренным солодом?",
+    "options": ["Pilsner", "Stout", "Witbier", "Saison"],
+    "correctOption": 1,
+    "durationSec": 20
+  }
+]

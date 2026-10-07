@@ -1,0 +1,4 @@
+node_modules/
+.env
+data/game-state.json.tmp
+.DS_Store
