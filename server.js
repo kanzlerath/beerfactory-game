@@ -108,11 +108,15 @@ function publicState() {
 }
 
 function hostState() {
+  const currentAnswers = state.round.questionId ? (state.answers[state.round.questionId] || {}) : {};
   return {
-    teams: state.teams.map(t => ({
-      ...t,
-      players: state.players.filter(p => p.teamId === t.id)
-    })),
+    teams: state.teams.map(t => {
+      const players = state.players.filter(p => p.teamId === t.id);
+      const eligible = new Set(state.round.eligiblePlayerIds || []);
+      const eligiblePlayers = players.filter(p => eligible.has(p.id));
+      const answered = eligiblePlayers.filter(p => currentAnswers[p.id]).length;
+      return { ...t, players, roundProgress: { eligible: eligiblePlayers.length, answered } };
+    }),
     questions,
     round: {
       ...state.round,
@@ -245,7 +249,7 @@ app.get("/api/player-state/:playerId", (req,res) => {
 });
 
 app.post("/api/host/teams", requireHost, async (req,res) => {
-  const name = String(req.body.name || "").trim();
+  const name = String(req.body?.name || "").trim();
   if (!name) return res.status(400).json({ error: "Введите название команды" });
   const team = { id: id("team"), name: name.slice(0,40), joinCode: makeJoinCode(), score: 0, createdAt: Date.now() };
   state.teams.push(team);
@@ -257,7 +261,7 @@ app.post("/api/host/teams", requireHost, async (req,res) => {
 app.patch("/api/host/teams/:id", requireHost, async (req,res) => {
   const team = state.teams.find(t => t.id === req.params.id);
   if (!team) return res.status(404).json({ error: "Команда не найдена" });
-  const name = String(req.body.name || "").trim();
+  const name = String(req.body?.name || "").trim();
   if (!name) return res.status(400).json({ error: "Введите название команды" });
   team.name = name.slice(0,40);
   await persist();
@@ -274,6 +278,31 @@ app.delete("/api/host/teams/:id", requireHost, async (req,res) => {
   res.status(204).end();
 });
 
+app.delete("/api/host/players/:id", requireHost, async (req,res) => {
+  if (state.round.status === "open" && state.round.eligiblePlayerIds.includes(req.params.id)) {
+    return res.status(409).json({ error: "Нельзя удалять участника во время активного вопроса" });
+  }
+  const exists = state.players.some(p => p.id === req.params.id);
+  if (!exists) return res.status(404).json({ error: "Игрок не найден" });
+  state.players = state.players.filter(p => p.id !== req.params.id);
+  for (const answers of Object.values(state.answers)) delete answers[req.params.id];
+  await persist();
+  io.emit("state:changed");
+  res.status(204).end();
+});
+
+app.post("/api/host/teams/:id/score", requireHost, async (req,res) => {
+  if (state.round.status === "open") return res.status(409).json({ error: "Менять счёт во время вопроса нельзя" });
+  const team = state.teams.find(t => t.id === req.params.id);
+  if (!team) return res.status(404).json({ error: "Команда не найдена" });
+  const delta = Number(req.body?.delta);
+  if (!Number.isInteger(delta) || Math.abs(delta) > 10) return res.status(400).json({ error: "Некорректное изменение счёта" });
+  team.score = Math.max(0, team.score + delta);
+  await persist();
+  io.emit("state:changed");
+  res.json({ score: team.score });
+});
+
 app.post("/api/join/:code", async (req,res) => {
   const team = state.teams.find(t => t.joinCode === String(req.params.code).toUpperCase());
   if (!team) return res.status(404).json({ error: "Команда не найдена" });
@@ -281,7 +310,7 @@ app.post("/api/join/:code", async (req,res) => {
   if (!name) return res.status(400).json({ error: "Введите имя" });
 
   let player = null;
-  const requestedId = String(req.body.playerId || "");
+  const requestedId = String(req.body?.playerId || "");
   if (requestedId) player = state.players.find(p => p.id === requestedId && p.teamId === team.id) || null;
 
   if (!player) {
@@ -301,13 +330,13 @@ app.post("/api/answer", async (req,res) => {
     await closeRound();
     return res.status(409).json({ error: "Время вышло" });
   }
-  const player = state.players.find(p => p.id === req.body.playerId);
+  const player = state.players.find(p => p.id === req.body?.playerId);
   if (!player) return res.status(404).json({ error: "Игрок не найден" });
   if (!state.round.eligiblePlayerIds.includes(player.id)) {
     return res.status(409).json({ error: "Вы присоединились после начала вопроса. Следующий раунд уже ваш." });
   }
   const q = getQuestion(state.round.questionId);
-  const option = Number(req.body.option);
+  const option = Number(req.body?.option);
   if (!q || !Number.isInteger(option) || option < 0 || option >= q.options.length) {
     return res.status(400).json({ error: "Некорректный ответ" });
   }
@@ -321,7 +350,7 @@ app.post("/api/answer", async (req,res) => {
 
 app.post("/api/host/round/start", requireHost, async (req,res) => {
   if (state.round.status === "open") return res.status(409).json({ error: "Сначала завершите текущий вопрос" });
-  const q = getQuestion(String(req.body.questionId || ""));
+  const q = getQuestion(String(req.body?.questionId || ""));
   if (!q) return res.status(404).json({ error: "Вопрос не найден" });
   const now = Date.now();
   state.answers[q.id] = {};
@@ -380,6 +409,14 @@ app.get("/api/join-qr.svg", async (req,res) => {
   const base = process.env.PUBLIC_URL || `${req.protocol}://${req.get("host")}`;
   const svg = await QRCode.toString(`${base}/join`, { type: "svg", margin: 1, width: 360 });
   res.type("image/svg+xml").send(svg);
+});
+
+app.get("/api/health", (_req,res) => res.json({ ok: true, teams: state.teams.length, players: state.players.length, round: state.round.status }));
+
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  if (res.headersSent) return;
+  res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });
 
 io.on("connection", socket => {
