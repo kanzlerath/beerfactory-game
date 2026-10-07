@@ -12,8 +12,27 @@ export async function api(url, options={}) {
   if (!res.ok) throw new Error(data?.error || `Ошибка запроса (${res.status})`);
   return data;
 }
-
 export function escapeHtml(value="") {
   return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
 export function fmtPct(value) { return Math.round(Number(value || 0) * 100) + "%"; }
+export function wordmark(label="GAME") {
+  return `<span class="wordmark"><span class="wordmark-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span><span>ПИВОФЭКТОРИ</span><span class="wordmark-sub">${label}</span></span></span>`;
+}
+export function hideSplash() {
+  const splash = document.querySelector("#splash");
+  if (!splash) return;
+  requestAnimationFrame(()=>splash.classList.add("is-hidden"));
+  setTimeout(()=>splash.remove(),500);
+}
+export function setBusy(button,busy,label="Загрузка…") {
+  if (!button) return;
+  if (busy) {
+    button.dataset.label = button.textContent;
+    button.textContent = label;
+    button.disabled = true;
+  } else {
+    button.textContent = button.dataset.label || button.textContent;
+    button.disabled = false;
+  }
+}
