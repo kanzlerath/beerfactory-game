@@ -1,31 +1,63 @@
 # BeerFactory Game
 
-Realtime team quiz for venue events.
+Realtime team quiz for venue events. No database: runtime state is kept in memory and persisted atomically to JSON.
 
-## Core mechanics
+## What already works
 
-- Teams are created dynamically by the host; there is no fixed team count.
-- Each team has an editable display name and a stable join code.
-- Any number of players can join a team.
-- Players enter a display name and keep a persistent local player ID in the browser.
-- Each team gets its own join URL / QR code.
-- The host starts and closes rounds.
-- Each player answers independently.
-- Team round score is based on the percentage of correct answers among players who submitted an answer.
-- If several teams have the same percentage, average response time is used as a tiebreaker.
-- Winning team receives 1 point.
-- Runtime state is kept in memory and persisted atomically to JSON. No database is required.
+- Dynamic number of teams.
+- Editable team names.
+- Unique join code and QR for every team.
+- Dynamic number of players; each guest joins with a name.
+- Host panel at `/host`.
+- Projector/public screen at `/screen`.
+- Player flow at `/join/:code`.
+- Realtime synchronization through Socket.IO.
+- Questions with four answer options and a server-side timer.
+- One answer per player per round.
+- Players joining after a round starts wait until the next question.
+- Team result = correct answers / players eligible at round start.
+- Tie-break = lower average response time among correct answers.
+- Winning team gets +1 point.
+- State survives process restarts through `data/game-state.json`.
+- Writes are atomic: temp file + rename.
 
-## Planned routes
+## Run locally
 
-- `/host` — host/admin panel
-- `/screen` — projector/public screen
-- `/join/:teamCode` — player join and gameplay
-- `/api/*` — supporting HTTP endpoints
+```bash
+npm install
+npm run dev
+```
+
+Open:
+
+- `http://localhost:3000/host`
+- `http://localhost:3000/screen`
+
+Create teams in the host panel, then open or print each team's QR.
+
+## Questions
+
+Edit `data/questions.json`.
+
+```json
+{
+  "id": "q4",
+  "text": "Текст вопроса",
+  "options": ["A", "B", "C", "D"],
+  "correctOption": 1,
+  "durationSec": 20
+}
+```
+
+`correctOption` is zero-based: 0 = first option, 1 = second, etc.
 
 ## Persistence
 
-- `data/game-state.json` — current session state
-- `data/questions.json` — question bank
+The app creates `data/game-state.json` automatically on first run.
 
-The server writes state only on business events (team/player creation, answer submit, round state changes, score changes) and restores it on startup.
+For production, deploy it somewhere with a persistent writable filesystem. A purely ephemeral/serverless host is not suitable for this JSON-only persistence model.
+
+Optional environment variables:
+
+- `PORT` — server port, default 3000.
+- `PUBLIC_URL` — public base URL used when generating QR links, e.g. `https://game.example.ru`.
