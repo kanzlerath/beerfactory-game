@@ -1,6 +1,8 @@
-import {socket,$,api,escapeHtml,fmtPct} from "/common.js";
+import {socket,$,api,escapeHtml,fmtPct,wordmark,hideSplash} from "/common.js";
 let data;
 let hostPin=sessionStorage.getItem("beerfactory:hostPin")||"";
+$("#lockLogo").innerHTML=wordmark("CONTROL");
+$("#hostLogo").innerHTML=wordmark("CONTROL");
 
 async function hostApi(url,options={}){
   return api(url,{...options,headers:{...(options.headers||{}),"x-host-pin":hostPin}});
@@ -9,8 +11,8 @@ async function auth(pin){
   await api("/api/host/auth",{method:"POST",body:JSON.stringify({pin})});
   hostPin=pin;sessionStorage.setItem("beerfactory:hostPin",pin);showApp();await load();
 }
-function showApp(){$("#lock").classList.add("hidden");$("#hostApp").classList.remove("hidden")}
-function showLock(){$("#lock").classList.remove("hidden");$("#hostApp").classList.add("hidden")}
+function showApp(){$("#lock").classList.add("hidden");$("#hostApp").classList.remove("hidden");hideSplash()}
+function showLock(){$("#lock").classList.remove("hidden");$("#hostApp").classList.add("hidden");hideSplash()}
 async function load(){
   try{data=await hostApi("/api/host-state");render()}
   catch(e){if(e.message.includes("PIN")){sessionStorage.removeItem("beerfactory:hostPin");hostPin="";showLock()}else msg(e.message,true)}
