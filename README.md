@@ -2,38 +2,39 @@
 
 Realtime team quiz for venue events. No database: runtime state is kept in memory and persisted atomically to JSON.
 
-## What already works
+## Current MVP
 
-- Dynamic number of teams.
-- Editable team names.
-- Unique join code and QR for every team.
-- Dynamic number of players; each guest joins with a name.
-- Host panel at `/host`.
-- Projector/public screen at `/screen`.
+- Dynamic teams and editable team names.
+- Unlimited practical player count for the event scale.
+- Individual team QR codes.
+- One common QR at `/join` with team selection.
+- Host panel at `/host`, protected by a PIN.
+- Projector screen at `/screen`.
 - Player flow at `/join/:code`.
 - Realtime synchronization through Socket.IO.
-- Questions with four answer options and a server-side timer.
+- Server-side round timer.
 - One answer per player per round.
-- Players joining after a round starts wait until the next question.
+- Players joining after a round begins start on the next question.
 - Team result = correct answers / players eligible at round start.
 - Tie-break = lower average response time among correct answers.
-- Winning team gets +1 point.
-- State survives process restarts through `data/game-state.json`.
-- Writes are atomic: temp file + rename.
+- Winning team receives +1 point.
+- JSON persistence with atomic temp-file + rename writes.
+- Automatic restore after process restart.
 
 ## Run locally
 
 ```bash
 npm install
-npm run dev
+HOST_PIN=2486 npm run dev
 ```
 
-Open:
+Then open:
 
 - `http://localhost:3000/host`
 - `http://localhost:3000/screen`
+- `http://localhost:3000/join`
 
-Create teams in the host panel, then open or print each team's QR.
+If `HOST_PIN` is omitted, development PIN `1212` is used. Set your own PIN in production.
 
 ## Questions
 
@@ -49,15 +50,14 @@ Edit `data/questions.json`.
 }
 ```
 
-`correctOption` is zero-based: 0 = first option, 1 = second, etc.
+`correctOption` is zero-based.
 
-## Persistence
-
-The app creates `data/game-state.json` automatically on first run.
-
-For production, deploy it somewhere with a persistent writable filesystem. A purely ephemeral/serverless host is not suitable for this JSON-only persistence model.
-
-Optional environment variables:
+## Environment
 
 - `PORT` — server port, default 3000.
-- `PUBLIC_URL` — public base URL used when generating QR links, e.g. `https://game.example.ru`.
+- `PUBLIC_URL` — public base URL used for QR links.
+- `HOST_PIN` — PIN for the host panel.
+
+## Deployment note
+
+This JSON-only persistence model requires a persistent writable filesystem. Do not deploy it to an ephemeral/serverless runtime unless the state file is mounted on persistent storage.
