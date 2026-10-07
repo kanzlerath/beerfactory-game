@@ -12,6 +12,7 @@ const DATA_DIR = path.join(__dirname, "data");
 const STATE_FILE = path.join(DATA_DIR, "game-state.json");
 const QUESTIONS_FILE = path.join(DATA_DIR, "questions.json");
 const PORT = Number(process.env.PORT || 3000);
+const HOST_PIN = String(process.env.HOST_PIN || "1212");
 
 const emptyState = () => ({
   version: 1,
@@ -204,6 +205,12 @@ function scheduleRoundTimer() {
   else roundTimer = setTimeout(closeRound, delay);
 }
 
+function requireHost(req, res, next) {
+  const pin = String(req.get("x-host-pin") || req.body?.pin || "");
+  if (pin !== HOST_PIN) return res.status(401).json({ error: "Неверный PIN ведущего" });
+  next();
+}
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -211,20 +218,33 @@ const io = new Server(server);
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (_req,res) => res.redirect("/screen"));
+app.get("/", (_req,res) => res.redirect("/join"));
 app.get("/host", (_req,res) => res.sendFile(path.join(__dirname, "public/host.html")));
 app.get("/screen", (_req,res) => res.sendFile(path.join(__dirname, "public/screen.html")));
+app.get("/join", (_req,res) => res.sendFile(path.join(__dirname, "public/lobby.html")));
 app.get("/join/:code", (_req,res) => res.sendFile(path.join(__dirname, "public/player.html")));
 
 app.get("/api/public-state", (_req,res) => res.json(publicState()));
-app.get("/api/host-state", (_req,res) => res.json(hostState()));
+app.get("/api/public-teams", (_req,res) => res.json(
+  state.teams.map(t => ({
+    id: t.id,
+    name: t.name,
+    joinCode: t.joinCode,
+    players: state.players.filter(p => p.teamId === t.id).length
+  })).sort((a,b) => a.name.localeCompare(b.name, "ru"))
+));
+app.post("/api/host/auth", (req,res) => {
+  if (String(req.body?.pin || "") !== HOST_PIN) return res.status(401).json({ error: "Неверный PIN ведущего" });
+  res.json({ ok: true });
+});
+app.get("/api/host-state", requireHost, (_req,res) => res.json(hostState()));
 app.get("/api/player-state/:playerId", (req,res) => {
   const view = playerState(req.params.playerId);
   if (!view) return res.status(404).json({ error: "Игрок не найден" });
   res.json(view);
 });
 
-app.post("/api/host/teams", async (req,res) => {
+app.post("/api/host/teams", requireHost, async (req,res) => {
   const name = String(req.body.name || "").trim();
   if (!name) return res.status(400).json({ error: "Введите название команды" });
   const team = { id: id("team"), name: name.slice(0,40), joinCode: makeJoinCode(), score: 0, createdAt: Date.now() };
@@ -234,7 +254,7 @@ app.post("/api/host/teams", async (req,res) => {
   res.status(201).json(team);
 });
 
-app.patch("/api/host/teams/:id", async (req,res) => {
+app.patch("/api/host/teams/:id", requireHost, async (req,res) => {
   const team = state.teams.find(t => t.id === req.params.id);
   if (!team) return res.status(404).json({ error: "Команда не найдена" });
   const name = String(req.body.name || "").trim();
@@ -245,7 +265,7 @@ app.patch("/api/host/teams/:id", async (req,res) => {
   res.json(team);
 });
 
-app.delete("/api/host/teams/:id", async (req,res) => {
+app.delete("/api/host/teams/:id", requireHost, async (req,res) => {
   if (state.round.status === "open") return res.status(409).json({ error: "Нельзя удалять команду во время вопроса" });
   state.teams = state.teams.filter(t => t.id !== req.params.id);
   state.players = state.players.filter(p => p.teamId !== req.params.id);
@@ -299,7 +319,7 @@ app.post("/api/answer", async (req,res) => {
   res.json({ ok: true });
 });
 
-app.post("/api/host/round/start", async (req,res) => {
+app.post("/api/host/round/start", requireHost, async (req,res) => {
   if (state.round.status === "open") return res.status(409).json({ error: "Сначала завершите текущий вопрос" });
   const q = getQuestion(String(req.body.questionId || ""));
   if (!q) return res.status(404).json({ error: "Вопрос не найден" });
@@ -319,12 +339,12 @@ app.post("/api/host/round/start", async (req,res) => {
   res.json(hostState().round);
 });
 
-app.post("/api/host/round/close", async (_req,res) => {
+app.post("/api/host/round/close", requireHost, async (_req,res) => {
   await closeRound();
   res.json(hostState().round);
 });
 
-app.post("/api/host/round/reveal", async (_req,res) => {
+app.post("/api/host/round/reveal", requireHost, async (_req,res) => {
   if (!["closed","revealed"].includes(state.round.status)) return res.status(409).json({ error: "Сначала завершите вопрос" });
   state.round.status = "revealed";
   await persist();
@@ -332,7 +352,7 @@ app.post("/api/host/round/reveal", async (_req,res) => {
   res.json(hostState().round);
 });
 
-app.post("/api/host/round/clear", async (_req,res) => {
+app.post("/api/host/round/clear", requireHost, async (_req,res) => {
   clearTimeout(roundTimer);
   state.round = emptyState().round;
   await persist();
@@ -340,7 +360,7 @@ app.post("/api/host/round/clear", async (_req,res) => {
   res.json({ ok: true });
 });
 
-app.post("/api/host/reset-scores", async (_req,res) => {
+app.post("/api/host/reset-scores", requireHost, async (_req,res) => {
   if (state.round.status === "open") return res.status(409).json({ error: "Нельзя сбрасывать счёт во время вопроса" });
   state.teams.forEach(t => t.score = 0);
   await persist();
@@ -353,6 +373,12 @@ app.get("/api/teams/:id/qr.svg", async (req,res) => {
   if (!team) return res.status(404).end();
   const base = process.env.PUBLIC_URL || `${req.protocol}://${req.get("host")}`;
   const svg = await QRCode.toString(`${base}/join/${team.joinCode}`, { type: "svg", margin: 1, width: 360 });
+  res.type("image/svg+xml").send(svg);
+});
+
+app.get("/api/join-qr.svg", async (req,res) => {
+  const base = process.env.PUBLIC_URL || `${req.protocol}://${req.get("host")}`;
+  const svg = await QRCode.toString(`${base}/join`, { type: "svg", margin: 1, width: 360 });
   res.type("image/svg+xml").send(svg);
 });
 
