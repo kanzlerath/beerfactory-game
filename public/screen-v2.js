@@ -4,7 +4,7 @@ const stage=$("#stage");
 const header=$("#logo");
 const status=$("#status");
 let lastScene="",timer=null,lastRevision=0;
-header.innerHTML='<div class="row" style="gap:18px"><img src="/assets/beerfactory-mark.svg" alt="BeerFactory" width="52" height="76" style="object-fit:contain"><div><div class="wordmark-main" style="font-size:27px">ПИВОФЭКТОРИ <span style="color:var(--bf-orange)">/ КВИЗ</span></div><div class="eyebrow" style="margin-top:7px">12 лет ресторану-пивоварне · Красный проспект, 22</div></div></div>';
+header.innerHTML="<div class=\"row\" style=\"gap:16px\"><img src=\"/assets/beerfactory-mark.svg\" alt=\"BeerFactory\" width=\"42\" height=\"58\" style=\"object-fit:contain\"><div class=\"wordmark-main\" style=\"font-size:clamp(24px,2vw,34px)\">ПИВОФЭКТОРИ <span style=\"color:var(--bf-orange)\">/ КВИЗ</span></div></div>";
 
 function listRow(t,index,compact=false){
   const indexText=String(index+1).padStart(2,"0");
@@ -17,43 +17,16 @@ function listRow(t,index,compact=false){
 function waiting(){
   return `
     <div class="bf-wait scene-fade">
-      <div class="bf-wait-story">
-        <div class="bf-wait-edition">
-          <span class="bf-wait-edition-line"></span>
-          <span>ПИВОФЭКТОРИ / 12 ЛЕТ</span>
-          <span class="bf-wait-edition-date">22.10.2026</span>
-        </div>
-
-        <div class="bf-wait-heading">
-          <span class="bf-wait-overline">ПРАЗДНИЧНЫЙ КВИЗ</span>
-          <h1 class="bf-wait-title">
-            <span>ИГРАЕМ</span>
-            <span class="bf-wait-title-accent">ВСЕМ ЗАЛОМ.</span>
-          </h1>
-          <p class="bf-wait-lead">Сегодня проверим, кто здесь знает больше всех. Играют все — прямо со своих телефонов.</p>
-        </div>
-
-        <div class="bf-wait-steps" aria-label="Как участвовать">
-          <div class="bf-wait-step"><span>01</span><b>Сканируйте QR</b></div>
-          <div class="bf-wait-step"><span>02</span><b>Выберите команду</b></div>
-          <div class="bf-wait-step"><span>03</span><b>Отвечайте на вопросы</b></div>
-        </div>
+      <div class="bf-wait-copy">
+        <div class="bf-wait-label">12 ЛЕТ ПИВОФЭКТОРИ</div>
+        <h1 class="bf-wait-title"><span>ИГРАЕМ</span><span>ВСЕМ ЗАЛОМ.</span></h1>
+        <p class="bf-wait-instruction">Сканируйте QR-код<br>и выбирайте команду.</p>
       </div>
-
-      <aside class="bf-wait-join">
-        <div class="bf-wait-join-top">
-          <span>ПРИСОЕДИНЯЙТЕСЬ</span>
-          <span aria-hidden="true" class="bf-wait-join-arrow">↗</span>
-        </div>
-        <div class="bf-wait-join-title">ВАША ИГРА<br>НАЧИНАЕТСЯ<br>ЗДЕСЬ.</div>
-        <div class="bf-wait-join-qr">
-          <img src="/api/join-qr.svg" alt="QR-код для входа в квиз Пивофэктори" width="280" height="280">
-        </div>
-        <div class="bf-wait-join-footer">
-          <span>НАВЕДИТЕ КАМЕРУ ТЕЛЕФОНА</span>
-          <span>БЕЗ ПРИЛОЖЕНИЙ И РЕГИСТРАЦИИ</span>
-        </div>
-      </aside>
+      <div class="bf-wait-qr-panel">
+        <div class="bf-wait-qr-title">ВХОД В ИГРУ</div>
+        <img src="/api/join-qr.svg" alt="QR-код для входа в квиз" width="300" height="300">
+        <div class="bf-wait-qr-hint">НАВЕДИТЕ КАМЕРУ ТЕЛЕФОНА</div>
+      </div>
     </div>
   `;
 }
@@ -66,11 +39,11 @@ function question(q,r){
   return '<div class="scene-fade"><div class="question-head"><div><div class="round-kicker">'+title+'</div>'+
     '<div class="question" style="margin-top:18px">'+escapeHtml(q.text)+'</div></div></div>'+
     '<div class="options">'+opts+'</div>'+
-    '<div class="timer-row"><div id="timer" class="timer">--</div><div id="timerLabel" class="timer-label">СЕКУНД ДО ЗАКРЫТИЯ</div></div>'+
+    '<div class="timer-row"><div id="timer" class="timer">--</div><div id="timerLabel" class="timer-label">СЕКУНД</div></div>'+
     '<div class="progress"><i id="bar"></i></div></div>';
 }
 function result(q,r){
-  const rows=(r.results||[]).slice(0,7).map((x,i)=>listRow(x,i,false)).join("");
+  const rows=(r.results||[]).slice(0,4).map((x,i)=>listRow(x,i,false)).join("");
   const leader=(r.results||[]).filter(x=>x.winner).map(x=>x.teamName).join(", ");
   return '<div class="scene-fade"><div class="round-kicker">РАУНД '+(q.round||1)+' · '+escapeHtml(q.roundTitle||"Викторина")+' · ОТВЕТ</div>'+
     '<div class="result-answer" style="margin:24px 0 30px">'+escapeHtml(q.options[q.correctOption])+'</div>'+
@@ -102,7 +75,7 @@ function render(d){
   const all=d.teams||[];
   $("#online").textContent=all.length+' команд · '+all.reduce((a,t)=>a+t.players,0)+' участников';
   status.textContent=r.status==="open"?"ИДЁТ ВОПРОС":r.status==="closed"?"ОТВЕТЫ ЗАКРЫТЫ":r.status==="revealed"?"ИТОГИ РАУНДА":r.status==="final"?"ФИНАЛ":"СОБИРАЕМ КОМАНДЫ";
-  $("#leaders").innerHTML=all.length?all.slice(0,6).map((t,i)=>listRow(t,i,true)).join(""):'<div style="padding:12px 0;color:var(--bf-muted)">Команды появятся после подключения гостей.</div>';
+  $("#leaders").innerHTML=all.length?all.slice(0,6).map((t,i)=>listRow(t,i,true)).join(""):'<div style="padding:12px 0;color:var(--bf-muted)">ЖДЁМ КОМАНДЫ</div>';
   stage.classList.toggle("is-waiting",!q&&r.status!=="final");
   if(key===lastScene)return;
   lastScene=key;
