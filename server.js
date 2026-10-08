@@ -189,7 +189,10 @@ function calculateResults() {
       const team = state.teams.find(t => t.id === winner.teamId);
       if (team) team.score += (q.points || 1);
     }
-    for (const row of ranked) row.winner = winners.some(w => w.teamId === row.teamId);
+    for (const row of ranked) {
+      row.winner = winners.some(w => w.teamId === row.teamId);
+      row.awardedPoints = row.winner ? (q.points || 1) : 0;
+    }
   }
   return ranked;
 }
@@ -310,7 +313,7 @@ app.post("/api/host/teams/:id/score", requireHost, async (req,res) => {
 app.post("/api/join/:code", async (req,res) => {
   const team = state.teams.find(t => t.joinCode === String(req.params.code).toUpperCase());
   if (!team) return res.status(404).json({ error: "Команда не найдена" });
-  const name = String(req.body.name || "").trim();
+  const name = String(req.body?.name || "").trim();
   if (!name) return res.status(400).json({ error: "Введите имя" });
 
   let player = null;
