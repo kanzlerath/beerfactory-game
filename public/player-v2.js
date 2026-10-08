@@ -2,7 +2,7 @@ import {socket,$,api,escapeHtml,hideSplash,setBusy} from "/common.js";
 
 const code=location.pathname.split("/").filter(Boolean).pop().toUpperCase();
 const key="beerfactory:"+code+":player";
-let playerId=localStorage.getItem(key)||"",view=null,lastKey="",timer=null,busy=false,pending=false;
+let playerId=localStorage.getItem(key)||"",view=null,lastKey="",timer=null,busy=false,pending=false,again=false;
 $("#logo").innerHTML='<div class="row" style="gap:10px"><img src="/assets/beerfactory-mark.svg" alt="BeerFactory" width="33" height="49" style="object-fit:contain"><div><div class="wordmark-main" style="font-size:19px">ПИВОФЭКТОРИ</div><div class="wordmark-sub" style="margin-top:4px">КВИЗ · 12 ЛЕТ</div></div></div>';
 $("#teamBadge").textContent="КОМАНДА "+code;
 
@@ -97,13 +97,13 @@ function render(){
 }
 async function load(){
   if(!playerId){showJoin();return}
-  if(pending)return;
+  if(pending){again=true;return}
   pending=true;
   try{view=await api("/api/player-state/"+playerId);render();hideSplash()}
   catch(e){
     if(e.message.includes("Игрок не найден")){localStorage.removeItem(key);playerId="";showJoin()}
     else{$("#teamBadge").textContent="ПОДКЛЮЧЕНИЕ…";hideSplash()}
-  }finally{pending=false}
+  }finally{pending=false;if(again){again=false;load()}}
 }
 $("#joinForm").addEventListener("submit",async e=>{
   e.preventDefault();const btn=$("#joinBtn");$("#joinError").textContent="";
