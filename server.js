@@ -25,7 +25,8 @@ const emptyState = () => ({
     startedAt: null,
     endsAt: null,
     eligiblePlayerIds: [],
-    results: []
+    results: [],
+    scoresApplied: false
   }
 });
 
@@ -185,10 +186,6 @@ function calculateResults() {
   const best = ranked[0];
   if (best && best.correct > 0) {
     const winners = ranked.filter(r => r.accuracy === best.accuracy && r.avgCorrectMs === best.avgCorrectMs);
-    for (const winner of winners) {
-      const team = state.teams.find(t => t.id === winner.teamId);
-      if (team) team.score += (q.points || 1);
-    }
     for (const row of ranked) {
       row.winner = winners.some(w => w.teamId === row.teamId);
       row.awardedPoints = row.winner ? (q.points || 1) : 0;
@@ -367,7 +364,8 @@ app.post("/api/host/round/start", requireHost, async (req,res) => {
     startedAt: now,
     endsAt: now + q.durationSec * 1000,
     eligiblePlayerIds: state.players.map(p => p.id),
-    results: []
+    results: [],
+    scoresApplied: false
   };
   await persist();
   scheduleRoundTimer();
@@ -382,6 +380,14 @@ app.post("/api/host/round/close", requireHost, async (_req,res) => {
 
 app.post("/api/host/round/reveal", requireHost, async (_req,res) => {
   if (!["closed","revealed"].includes(state.round.status)) return res.status(409).json({ error: "Сначала завершите вопрос" });
+  if (state.round.status === "closed" && !state.round.scoresApplied) {
+    for (const row of state.round.results) {
+      if (!row.winner) continue;
+      const team = state.teams.find(t => t.id === row.teamId);
+      if (team) team.score += (row.awardedPoints || 1);
+    }
+    state.round.scoresApplied = true;
+  }
   state.round.status = "revealed";
   await persist();
   io.emit("state:changed");
