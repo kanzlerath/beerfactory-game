@@ -4,7 +4,7 @@ const stage=$("#stage");
 const header=$("#logo");
 const status=$("#status");
 let lastScene="",timer=null,lastRevision=0;
-header.innerHTML='<div class="row" style="gap:18px"><img src="/assets/beerfactory-mark.svg" alt="BeerFactory" width="52" height="76" style="object-fit:contain"><div><div class="wordmark-main" style="font-size:27px">ПУЛЬТ ВЕДУЩЕГО <span style="color:var(--bf-orange)">/ КВИЗ</span></div><div class="eyebrow" style="margin-top:7px">12 лет ресторану-пивоварне · Красный проспект, 22</div></div></div>';
+header.innerHTML='<div class="row" style="gap:18px"><img src="/assets/beerfactory-mark.svg" alt="BeerFactory" width="52" height="76" style="object-fit:contain"><div><div class="wordmark-main" style="font-size:27px">ПИВОФЭКТОРИ <span style="color:var(--bf-orange)">/ КВИЗ</span></div><div class="eyebrow" style="margin-top:7px">12 лет ресторану-пивоварне · Красный проспект, 22</div></div></div>';
 
 function listRow(t,index,compact=false){
   const indexText=String(index+1).padStart(2,"0");
