@@ -120,10 +120,10 @@ function renderControls(){
   setMode(s);
   const action=s==="idle"?"start":s==="open"?"close":s==="closed"?"reveal":s==="revealed"?"next":"waiting";
   const title={start:"ЗАПУСТИТЬ ВОПРОС →",close:"ЗАВЕРШИТЬ ВОПРОС",reveal:"ПОКАЗАТЬ РЕЗУЛЬТАТ →",next:nextQuestionId()?"СЛЕДУЮЩИЙ ВОПРОС →":"ПОКАЗАТЬ ФИНАЛ →",waiting:"К ВОПРОСАМ →"};
-  $("#mainActionBtn").dataset.action=action;$("#mainActionBtn").textContent=title[action];$("#mainActionBtn").disabled=action==="start"&&!data.questions.length;
+  $("#mainActionBtn").dataset.action=action;$("#mainActionBtn").textContent=title[action];$("#mainActionBtn").disabled=action==="start"&&(!data.questions.length||!data.teams.some(t=>t.players.length>0));
   $("#nextBtn").classList.add("hidden");
   $("#clearBtn").textContent="ВЕРНУТЬ ЭКРАН ОЖИДАНИЯ";
-  if(s==="idle")$("#roundInfo").innerHTML='<div class="notice">Выберите вопрос и нажмите большую оранжевую кнопку. На экране зала сразу пойдёт отсчёт.</div>';
+  if(s==="idle")$("#roundInfo").innerHTML='<div class="notice">Добавьте команды и игроков, выберите вопрос и нажмите большую оранжевую кнопку. На экране зала сразу пойдёт отсчёт.</div>';
   else if(s==="open"){
     const replied=data.teams.reduce((n,t)=>n+(t.roundProgress?.answered||0),0);
     $("#roundInfo").innerHTML='<div class="notice"><b>СЕЙЧАС НА ЭКРАНЕ:</b> '+escapeHtml(q?.text||'')+
