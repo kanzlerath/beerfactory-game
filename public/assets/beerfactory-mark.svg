@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 188" role="img" aria-label="BeerFactory NSK">
+<path d="M28 3H102Q108 3 112 10L124 34V146Q124 156 116 164L104 182H26L14 164Q6 156 6 146V34L18 10Q22 3 28 3Z" fill="#060606" stroke="#060606" stroke-width="6"/>
+<path d="M25 10H65V107H13V36L25 10Z" fill="#f6c04a"/><path d="M65 10H105L117 36V107H65Z" fill="#ed5145"/>
+<path d="M13 108H117V141H13Z" fill="#090909"/><path d="M13 143H117V156L101 178H29L13 156Z" fill="#81c15c"/>
+<g fill="none" stroke="#050505" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+<path d="M40 26C35 37 27 40 27 50C27 59 33 65 40 65C47 65 54 59 54 50C54 41 45 37 40 26Z"/>
+<path d="M20 76Q30 70 40 76T60 76M20 85Q30 79 40 85T60 85M20 94Q30 88 40 94T60 94"/>
+<path d="M91 28V96M91 42Q73 38 75 30Q87 30 91 42ZM91 52Q108 49 107 41Q94 42 91 52ZM91 64Q73 61 75 53Q87 54 91 64ZM91 76Q108 72 107 64Q94 66 91 76ZM91 89Q73 84 75 77Q87 78 91 89Z"/>
+</g>
+<text x="65" y="130" text-anchor="middle" fill="#f5b941" font-family="Arial Black,Arial,sans-serif" font-size="13" font-weight="900" letter-spacing=".5">BEER<tspan fill="#ed5145">FACTORY</tspan></text>
+<text x="65" y="165" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-size="23" letter-spacing="5" fill="#111">NSK</text>
+</svg>
