@@ -8,7 +8,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, "data");
+const DATA_DIR = process.env.DATA_DIR ? path.resolve(process.env.DATA_DIR) : path.join(__dirname, "data");
 const STATE_FILE = path.join(DATA_DIR, "game-state.json");
 const QUESTIONS_FILE = path.join(DATA_DIR, "questions.json");
 const PORT = Number(process.env.PORT || 3000);
@@ -40,6 +40,10 @@ async function loadData() {
   questions = JSON.parse(await fs.readFile(QUESTIONS_FILE, "utf8"));
   try {
     state = JSON.parse(await fs.readFile(STATE_FILE, "utf8"));
+    // States created by earlier versions already awarded points at close.
+    if (state.round?.status === "closed" && state.round.scoresApplied === undefined) {
+      state.round.scoresApplied = true;
+    }
   } catch {
     state = emptyState();
     await persist();
