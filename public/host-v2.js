@@ -39,7 +39,8 @@ function setMode(status){
     el.classList.toggle("is-active",active);
     el.setAttribute("aria-pressed",String(active));
     el.disabled=target==="result"&&!["closed","revealed"].includes(status)||
-      target==="final"&&status==="open";
+      target==="final"&&status==="open"||
+      target==="question"&&["open","closed"].includes(status);
   });
 }
 function formatQuestions(){
