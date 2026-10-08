@@ -1,23 +1,402 @@
 [
   {
-    "id": "q1",
-    "text": "Сколько лет BeerFactory?",
-    "options": ["8", "10", "12", "15"],
+    "id": "r1q1",
+    "round": 1,
+    "roundTitle": "Разогрев",
+    "questionNumber": 1,
+    "text": "Что из этого НЕ входит в базовые ингредиенты классического пива?",
+    "options": [
+      "Вода",
+      "Солод",
+      "Хмель",
+      "Виноград"
+    ],
+    "correctOption": 3,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r1q2",
+    "round": 1,
+    "roundTitle": "Разогрев",
+    "questionNumber": 2,
+    "text": "Как называется ёмкость, из которой пиво наливают под давлением в баре?",
+    "options": [
+      "Кег",
+      "Шейкер",
+      "Графин",
+      "Декантер"
+    ],
+    "correctOption": 0,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r1q3",
+    "round": 1,
+    "roundTitle": "Разогрев",
+    "questionNumber": 3,
+    "text": "Что обычно измеряют в IBU?",
+    "options": [
+      "Крепость",
+      "Горечь",
+      "Плотность пены",
+      "Температуру подачи"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r1q4",
+    "round": 1,
+    "roundTitle": "Разогрев",
+    "questionNumber": 4,
+    "text": "Какой бокал чаще всего связывают с пшеничным пивом?",
+    "options": [
+      "Высокий вайцен",
+      "Купе",
+      "Мартини",
+      "Коньячный снифтер"
+    ],
+    "correctOption": 0,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r1q5",
+    "round": 1,
+    "roundTitle": "Разогрев",
+    "questionNumber": 5,
+    "text": "Что делает дрожжи в процессе брожения?",
+    "options": [
+      "Добавляют горечь",
+      "Превращают сахара в алкоголь и CO₂",
+      "Окрашивают пиво",
+      "Охлаждают сусло"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r2q1",
+    "round": 2,
+    "roundTitle": "Пивофэктори",
+    "questionNumber": 1,
+    "text": "Сколько классических сортов пива регулярно варят в Пивофэктори?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "7"
+    ],
     "correctOption": 2,
-    "durationSec": 20
+    "durationSec": 20,
+    "points": 1
   },
   {
-    "id": "q2",
-    "text": "Какой ингредиент отвечает за горечь в пиве?",
-    "options": ["Солод", "Хмель", "Дрожжи", "Вода"],
-    "correctOption": 1,
-    "durationSec": 20
+    "id": "r2q2",
+    "round": 2,
+    "roundTitle": "Пивофэктори",
+    "questionNumber": 2,
+    "text": "Какого сорта нет в основной классической пятёрке Пивофэктори?",
+    "options": [
+      "Хеллес",
+      "Пильзенское",
+      "Бархатное",
+      "IPA Factory"
+    ],
+    "correctOption": 3,
+    "durationSec": 20,
+    "points": 1
   },
   {
-    "id": "q3",
-    "text": "Какой стиль традиционно ассоциируется с тёмным обжаренным солодом?",
-    "options": ["Pilsner", "Stout", "Witbier", "Saison"],
+    "id": "r2q3",
+    "round": 2,
+    "roundTitle": "Пивофэктори",
+    "questionNumber": 3,
+    "text": "На каком проспекте находится Пивофэктори?",
+    "options": [
+      "Дзержинского",
+      "Красный",
+      "Карла Маркса",
+      "Октябрьский"
+    ],
     "correctOption": 1,
-    "durationSec": 20
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r2q4",
+    "round": 2,
+    "roundTitle": "Пивофэктори",
+    "questionNumber": 4,
+    "text": "Какой из классических сортов Пивофэктори — тёмный лагер?",
+    "options": [
+      "Хеллес",
+      "Пшеничное",
+      "Бархатное",
+      "Пильзенское"
+    ],
+    "correctOption": 2,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r2q5",
+    "round": 2,
+    "roundTitle": "Пивофэктори",
+    "questionNumber": 5,
+    "text": "Что в Пивофэктори принципиально не делают с основным пивом?",
+    "options": [
+      "Охлаждают",
+      "Пастеризуют",
+      "Разливают",
+      "Подают в бокалах"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r3q1",
+    "round": 3,
+    "roundTitle": "Пивная наука",
+    "questionNumber": 1,
+    "text": "Какой ингредиент сильнее всего отвечает за характерную пивную горечь?",
+    "options": [
+      "Солод",
+      "Хмель",
+      "Дрожжи",
+      "Вода"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r3q2",
+    "round": 3,
+    "roundTitle": "Пивная наука",
+    "questionNumber": 2,
+    "text": "Как называется процесс, когда дрожжи перерабатывают сахара в алкоголь?",
+    "options": [
+      "Фильтрация",
+      "Карбонизация",
+      "Ферментация",
+      "Пастеризация"
+    ],
+    "correctOption": 2,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r3q3",
+    "round": 3,
+    "roundTitle": "Пивная наука",
+    "questionNumber": 3,
+    "text": "Какой сорт Пивофэктори на сайте указан с самой низкой горечью?",
+    "options": [
+      "Хеллес",
+      "Пшеничное",
+      "Бархатное",
+      "Мартовское"
+    ],
+    "correctOption": 0,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r3q4",
+    "round": 3,
+    "roundTitle": "Пивная наука",
+    "questionNumber": 4,
+    "text": "Что сильнее всего влияет на цвет пива?",
+    "options": [
+      "Температура бокала",
+      "Степень обжарки солода",
+      "Форма крана",
+      "Давление CO₂"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r3q5",
+    "round": 3,
+    "roundTitle": "Пивная наука",
+    "questionNumber": 5,
+    "text": "Как называется немецкий стиль светлого лагера, который есть в Пивофэктори?",
+    "options": [
+      "Helles",
+      "Porter",
+      "Saison",
+      "Gose"
+    ],
+    "correctOption": 0,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r4q1",
+    "round": 4,
+    "roundTitle": "Вкус и гастрономия",
+    "questionNumber": 1,
+    "text": "Какой вкус обычно лучше всего смягчает ощущение хмелевой горечи?",
+    "options": [
+      "Сладкий",
+      "Солёный",
+      "Кислый",
+      "Умами"
+    ],
+    "correctOption": 0,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r4q2",
+    "round": 4,
+    "roundTitle": "Вкус и гастрономия",
+    "questionNumber": 2,
+    "text": "Что чаще всего сочетают с насыщенным тёмным лагером?",
+    "options": [
+      "Нежное безе",
+      "Запечённое мясо",
+      "Сорбет",
+      "Огуречный смузи"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r4q3",
+    "round": 4,
+    "roundTitle": "Вкус и гастрономия",
+    "questionNumber": 3,
+    "text": "Какой аромат чаще ассоциируется с пшеничным пивом немецкого типа?",
+    "options": [
+      "Банан и гвоздика",
+      "Кофе и какао",
+      "Дым и торф",
+      "Мята и эвкалипт"
+    ],
+    "correctOption": 0,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r4q4",
+    "round": 4,
+    "roundTitle": "Вкус и гастрономия",
+    "questionNumber": 4,
+    "text": "Какой из этих вкусов НЕ считается базовым вкусом человека?",
+    "options": [
+      "Сладкий",
+      "Солёный",
+      "Острый",
+      "Умами"
+    ],
+    "correctOption": 2,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r4q5",
+    "round": 4,
+    "roundTitle": "Вкус и гастрономия",
+    "questionNumber": 5,
+    "text": "Зачем пиву пена?",
+    "options": [
+      "Только для красоты",
+      "Помогает удерживать аромат и защищает поверхность",
+      "Чтобы бокал казался полнее",
+      "Чтобы скрывать цвет"
+    ],
+    "correctOption": 1,
+    "durationSec": 20,
+    "points": 1
+  },
+  {
+    "id": "r5q1",
+    "round": 5,
+    "roundTitle": "Финал",
+    "questionNumber": 1,
+    "text": "Какой классический сорт Пивофэктори на сайте указан как самый горький по IBU?",
+    "options": [
+      "Хеллес",
+      "Пшеничное",
+      "Пильзенское",
+      "Мартовское"
+    ],
+    "correctOption": 3,
+    "durationSec": 25,
+    "points": 2
+  },
+  {
+    "id": "r5q2",
+    "round": 5,
+    "roundTitle": "Финал",
+    "questionNumber": 2,
+    "text": "Какой из этих сортов традиционно относится к пшеничному пиву?",
+    "options": [
+      "Weissbier",
+      "Pilsner",
+      "Dunkel lager",
+      "Märzen"
+    ],
+    "correctOption": 0,
+    "durationSec": 25,
+    "points": 2
+  },
+  {
+    "id": "r5q3",
+    "round": 5,
+    "roundTitle": "Финал",
+    "questionNumber": 3,
+    "text": "Что значит «непастеризованное пиво»?",
+    "options": [
+      "Его не охлаждают",
+      "Его не нагревают для пастеризации после производства",
+      "В нём нет дрожжей",
+      "В нём нет хмеля"
+    ],
+    "correctOption": 1,
+    "durationSec": 25,
+    "points": 2
+  },
+  {
+    "id": "r5q4",
+    "round": 5,
+    "roundTitle": "Финал",
+    "questionNumber": 4,
+    "text": "Какой адрес у Пивофэктори?",
+    "options": [
+      "Красный проспект, 22",
+      "Ленина, 22",
+      "Советская, 22",
+      "Фрунзе, 22"
+    ],
+    "correctOption": 0,
+    "durationSec": 25,
+    "points": 2
+  },
+  {
+    "id": "r5q5",
+    "round": 5,
+    "roundTitle": "Финал",
+    "questionNumber": 5,
+    "text": "Что лучше всего описывает формат Пивофэктори?",
+    "options": [
+      "Только бар",
+      "Ресторан-пивоварня",
+      "Только пивной магазин",
+      "Фудкорт"
+    ],
+    "correctOption": 1,
+    "durationSec": 25,
+    "points": 2
   }
 ]
