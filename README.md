@@ -1,63 +1,72 @@
-# BeerFactory Game
+# Пивофэктори · Квиз к 12-летию
 
-Realtime team quiz for venue events. No database: runtime state is kept in memory and persisted atomically to JSON.
+Интерактивная командная игра для ресторана-пивоварни. Гости отвечают с телефонов, ведущий управляет вопросами и эфиром, на проекторе — текущий слайд и общий счёт.
 
-## Current MVP
+## Экраны
 
-- Dynamic teams and editable team names.
-- Unlimited practical player count for the event scale.
-- Individual team QR codes.
-- One common QR at `/join` with team selection.
-- Host panel at `/host`, protected by a PIN.
-- Projector screen at `/screen`.
-- Player flow at `/join/:code`.
-- Realtime synchronization through Socket.IO.
-- Server-side round timer.
-- One answer per player per round.
-- Players joining after a round begins start on the next question.
-- Team result = correct answers / players eligible at round start.
-- Tie-break = lower average response time among correct answers.
-- Winning team receives +1 point.
-- JSON persistence with atomic temp-file + rename writes.
-- Automatic restore after process restart.
+- **`/host`** — пульт ведущего: создание команд, индивидуальные QR, управление слайдами, выбор вопросов, контроль ответов, результаты, финал.
+- **`/screen`** — большой экран: приветствие с QR, вопрос с таймером, результаты, экран победителей.
+- **`/join`** — общий вход с выбором команды.
+- **`/join/:code`** — личный экран игрока, оптимизированный под телефон.
 
-## Run locally
+Дизайн: тёмная база, оранжевый акцент, крупная афишная типографика. На большом экране используется фото интерьера «Пивофэктори» (загружается с сайта ресторана); на телефонах — сплошной тёмный фон. В `public/assets` — векторная адаптация логотипа из оригинального изображения и декоративная графика.
+
+## Сценарий для ведущего
+
+1. Откройте `/host`, введите `HOST_PIN`, создайте команды с произвольными названиями.
+2. Откройте `/screen` на проекторе. Гости сканируют общий QR либо индивидуальные QR своих команд и вводят имя.
+3. Выберите вопрос из списка, сгруппированного по пяти раундам, и нажмите «Запустить вопрос».
+4. Сервер сам закроет ответы по таймеру. При необходимости можно завершить вопрос досрочно.
+5. Нажмите «Показать результат». Только сейчас победившей команде начисляются очки, которые становятся видны залу.
+6. Нажмите «Следующий вопрос». После последнего вопроса появится финальный экран с победителями.
+
+Отдельные плитки в пульте позволяют переключать **Ожидание / Вопрос / Результат / Финал**. Текущая сцена отмечена. Если пользователь подключился после старта вопроса, он участвует со следующего вопроса.
+
+## Правила
+
+- Число команд и игроков заранее не ограничено.
+- Первый ответ игрока на вопрос окончательный.
+- Состав участников раунда фиксируется при старте; неответивший считается ошибившимся.
+- Результат команды: доля правильных ответов среди участников, допущенных к вопросу.
+- При одинаковой доле побеждает команда с меньшим средним временем **правильных** ответов; абсолютная ничья приносит очки обеим.
+- При отсутствии правильных ответов очки не начисляются.
+- Раунды 1–4: победителю вопроса +1, финальный раунд: +2.
+- Вся игра и регистрация восстанавливаются после перезапуска сервера за счёт атомарного сохранения JSON, база данных не требуется.
+
+В `data/questions.json` уже 25 вопросов по пяти раундам. Для каждого вопроса доступны `id`, `round`, `roundTitle`, `questionNumber`, `text`, `options`, `correctOption` (индексация с нуля), `durationSec`, `points`.
+
+## Запуск
+
+Нужен Node.js 20+.
 
 ```bash
 npm install
 HOST_PIN=2486 npm run dev
 ```
 
-Then open:
+Адреса: `http://localhost:3000/host`, `/screen`, `/join`.
 
-- `http://localhost:3000/host`
-- `http://localhost:3000/screen`
-- `http://localhost:3000/join`
+Для мероприятия разместите сервер на доступном по HTTPS адресе, настройте публичный URL, чтобы QR открывались **на телефонах**, а не в локальном `localhost`:
 
-If `HOST_PIN` is omitted, development PIN `1212` is used. Set your own PIN in production.
-
-## Questions
-
-Edit `data/questions.json`.
-
-```json
-{
-  "id": "q4",
-  "text": "Текст вопроса",
-  "options": ["A", "B", "C", "D"],
-  "correctOption": 1,
-  "durationSec": 20
-}
+```bash
+HOST_PIN=ВАШ_PIN PUBLIC_URL=https://game.example.ru npm start
 ```
 
-`correctOption` is zero-based.
+`PORT` — порт, по умолчанию 3000. `DATA_DIR` — необязательная директория для состояния и вопросов, по умолчанию `data/`. Если меняете `DATA_DIR`, положите туда `questions.json`.
 
-## Environment
+По умолчанию PIN = `1212` только для локального тестирования — смените его для мероприятия.
 
-- `PORT` — server port, default 3000.
-- `PUBLIC_URL` — public base URL used for QR links.
-- `HOST_PIN` — PIN for the host panel.
+## Проверки
 
-## Deployment note
+```bash
+npm run check
+npm test
+```
 
-This JSON-only persistence model requires a persistent writable filesystem. Do not deploy it to an ephemeral/serverless runtime unless the state file is mounted on persistent storage.
+Smoke-тест запускает отдельный сервер с **временным каталогом данных**, не трогая настоящие команды, игроков и счёт. Проверяются: PIN, добавление команд и гостей, старт, ответы, защита от повторного ответа, закрытие раунда, выдача очков только при показе результата, QR, финальный экран, доступность всех четырёх страниц. GitHub Actions запускает тесты при обновлении `main`.
+
+## Важное для проведения
+
+- Для реальных гостей нужен устойчивый доступ к серверу и Socket.IO. Не использовать ephemeral/serverless-хостинг без постоянного процесса и диска.
+- Фото на проекторе загружается с внешнего ресурса; при недоступности фото сохраняется тёмный фон и функциональность.
+- Перед праздником обязательно прогоните тест: ведущий + проектор + несколько телефонов в той сети, которой будут пользоваться гости. Проверить сканирование QR и отсутствие изоляции Wi-Fi-клиентов.
