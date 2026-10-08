@@ -79,6 +79,10 @@ function publicQuestion(q, reveal = false) {
     text: q.text,
     options: q.options,
     durationSec: q.durationSec,
+    round: q.round || 1,
+    roundTitle: q.roundTitle || "Квиз",
+    questionNumber: q.questionNumber || 1,
+    points: q.points || 1,
     ...(reveal ? { correctOption: q.correctOption } : {})
   };
 }
@@ -183,7 +187,7 @@ function calculateResults() {
     const winners = ranked.filter(r => r.accuracy === best.accuracy && r.avgCorrectMs === best.avgCorrectMs);
     for (const winner of winners) {
       const team = state.teams.find(t => t.id === winner.teamId);
-      if (team) team.score += 1;
+      if (team) team.score += (q.points || 1);
     }
     for (const row of ranked) row.winner = winners.some(w => w.teamId === row.teamId);
   }
