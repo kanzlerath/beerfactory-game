@@ -15,13 +15,47 @@ function listRow(t,index,compact=false){
     '<div class="score">'+(compact?t.score:(t.winner?'+'+(t.awardedPoints||1):fmtPct(t.accuracy)))+'</div></div>';
 }
 function waiting(){
-  return '<div class="screen-wait scene-fade">'+
-    '<div class="anniversary-block"><div class="anniversary-number">12</div>'+
-    '<div class="anniversary-copy"><div class="eyebrow">лет Пивофэктори</div>'+
-    '<div class="anniversary-title">ИГРАЕМ<br>ВСЕМ ЗАЛОМ</div>'+
-    '<p style="max-width:450px;font-size:clamp(18px,2vw,27px);line-height:1.32;margin:0">Сканируйте QR, выбирайте команду<br>и подключайтесь к игре.</p></div></div>'+
-    '<div class="screen-join"><img src="/api/join-qr.svg" alt="QR-код для входа в игру">'+
-    '<h2>ВХОД В ИГРУ</h2><p class="muted" style="font-size:16px;line-height:1.3;margin:0">Навести камеру телефона.<br>Ничего устанавливать не нужно.</p></div></div>';
+  return `
+    <div class="bf-wait scene-fade">
+      <div class="bf-wait-story">
+        <div class="bf-wait-edition">
+          <span class="bf-wait-edition-line"></span>
+          <span>ПИВОФЭКТОРИ / 12 ЛЕТ</span>
+          <span class="bf-wait-edition-date">22.10.2026</span>
+        </div>
+
+        <div class="bf-wait-heading">
+          <span class="bf-wait-overline">ПРАЗДНИЧНЫЙ КВИЗ</span>
+          <h1 class="bf-wait-title">
+            <span>ИГРАЕМ</span>
+            <span class="bf-wait-title-accent">ВСЕМ ЗАЛОМ.</span>
+          </h1>
+          <p class="bf-wait-lead">Сегодня проверим, кто здесь знает больше всех. Играют все — прямо со своих телефонов.</p>
+        </div>
+
+        <div class="bf-wait-steps" aria-label="Как участвовать">
+          <div class="bf-wait-step"><span>01</span><b>Сканируйте QR</b></div>
+          <div class="bf-wait-step"><span>02</span><b>Выберите команду</b></div>
+          <div class="bf-wait-step"><span>03</span><b>Отвечайте на вопросы</b></div>
+        </div>
+      </div>
+
+      <aside class="bf-wait-join">
+        <div class="bf-wait-join-top">
+          <span>ПРИСОЕДИНЯЙТЕСЬ</span>
+          <span aria-hidden="true" class="bf-wait-join-arrow">↗</span>
+        </div>
+        <div class="bf-wait-join-title">ВАША ИГРА<br>НАЧИНАЕТСЯ<br>ЗДЕСЬ.</div>
+        <div class="bf-wait-join-qr">
+          <img src="/api/join-qr.svg" alt="QR-код для входа в квиз Пивофэктори" width="280" height="280">
+        </div>
+        <div class="bf-wait-join-footer">
+          <span>НАВЕДИТЕ КАМЕРУ ТЕЛЕФОНА</span>
+          <span>БЕЗ ПРИЛОЖЕНИЙ И РЕГИСТРАЦИИ</span>
+        </div>
+      </aside>
+    </div>
+  `;
 }
 function question(q,r){
   const count=(q.questionNumber || 1);
@@ -69,6 +103,7 @@ function render(d){
   $("#online").textContent=all.length+' команд · '+all.reduce((a,t)=>a+t.players,0)+' участников';
   status.textContent=r.status==="open"?"ИДЁТ ВОПРОС":r.status==="closed"?"ОТВЕТЫ ЗАКРЫТЫ":r.status==="revealed"?"ИТОГИ РАУНДА":r.status==="final"?"ФИНАЛ":"СОБИРАЕМ КОМАНДЫ";
   $("#leaders").innerHTML=all.length?all.slice(0,6).map((t,i)=>listRow(t,i,true)).join(""):'<div style="padding:12px 0;color:var(--bf-muted)">Команды появятся после подключения гостей.</div>';
+  stage.classList.toggle("is-waiting",!q&&r.status!=="final");
   if(key===lastScene)return;
   lastScene=key;
   clearInterval(timer);timer=null;
