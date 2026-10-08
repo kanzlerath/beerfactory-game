@@ -47,7 +47,7 @@ function setTileState(r){
 function renderQuestionPreview(){
   const q=data.questions.find(x=>x.id===$("#questionSelect").value)||data.questions[0];
   if(!q){$("#questionPreview").innerHTML='<div class="notice">Нет вопросов.</div>';return}
-  $("#questionPreview").innerHTML=`<div class="question-preview-label">Предпросмотр</div><div class="question-preview-title">${escapeHtml(q.text)}</div><div class="question-preview-options">${q.options.map((o,i)=>`<span><b>${String.fromCharCode(65+i)}</b> ${escapeHtml(o)}</span>`).join("")}</div><div class="question-preview-time">${q.durationSec} сек.</div>`;
+  $("#questionPreview").innerHTML=`<div class="question-preview-label">Раунд ${q.round} · ${escapeHtml(q.roundTitle)} · вопрос ${q.questionNumber}</div><div class="question-preview-title">${escapeHtml(q.text)}</div><div class="question-preview-options">${q.options.map((o,i)=>`<span><b>${String.fromCharCode(65+i)}</b> ${escapeHtml(o)}</span>`).join("")}</div><div class="question-preview-time">${q.durationSec} сек. · ${q.points||1} очк.</div>`;
 }
 function render(){
   const r=data.round;
@@ -61,7 +61,11 @@ function render(){
   }).join(""):'<p class="muted">Добавьте первую команду.</p>';
 
   const selected=$("#questionSelect").value;
-  $("#questionSelect").innerHTML=data.questions.map(q=>`<option value="${q.id}" ${selected===q.id||(!selected&&r.questionId===q.id)?"selected":""}>${escapeHtml(q.text)}</option>`).join("");
+  const rounds=[...new Map(data.questions.map(q=>[q.round,q.roundTitle])).entries()];
+  $("#questionSelect").innerHTML=rounds.map(([round,title])=>{
+    const opts=data.questions.filter(q=>q.round===round).map(q=>`<option value="${q.id}" ${selected===q.id||(!selected&&r.questionId===q.id)?"selected":""}>${q.questionNumber}. ${escapeHtml(q.text)}</option>`).join("");
+    return `<optgroup label="${round}. ${escapeHtml(title)}">${opts}</optgroup>`;
+  }).join("");
   if(!$("#questionSelect").value&&data.questions[0]) $("#questionSelect").value=data.questions[0].id;
   renderQuestionPreview();
 
@@ -73,7 +77,7 @@ function render(){
   }else if(r.status==="closed"){
     $("#roundInfo").innerHTML='<div class="notice"><b>Время вышло.</b><br>Ответы закрыты. Следующий шаг — показать результат на экране.</div>';
   }else{
-    $("#roundInfo").innerHTML=`<div class="notice"><b>Результат показан.</b><br>${(r.results||[]).map(x=>`${x.winner?"★ ":""}${escapeHtml(x.teamName)} — ${fmtPct(x.accuracy)}`).join(" · ")||"Раунд завершён."}</div>`;
+    $("#roundInfo").innerHTML=`<div class="notice"><b>Результат показан.</b><br>${(r.results||[]).map(x=>`${x.winner?"★ ":""}${escapeHtml(x.teamName)} — ${fmtPct(x.accuracy)}${x.winner?` · +${x.awardedPoints||1}`:""}`).join(" · ")||"Раунд завершён."}</div>`;
   }
 
   const action=mainAction(r);
