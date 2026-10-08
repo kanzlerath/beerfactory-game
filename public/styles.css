@@ -111,3 +111,26 @@ button.option:hover{border-color:#684a36;background:#211a15}
   .hero{padding:38px 0}.question{font-size:39px}.option{min-height:64px;padding:15px}
   .host-lock{margin-top:3vh}.screen-frame{min-height:auto}
 }
+
+/* Host show-control */
+.host-stage{padding:24px}
+.host-screen-state{font-size:15px;color:var(--cream);font-weight:750}
+.screen-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.screen-tile{appearance:none;padding:0;text-align:left;color:var(--text);border:1px solid var(--line);background:var(--panel-2);border-radius:18px;overflow:hidden;transition:.16s;cursor:pointer}
+.screen-tile:hover{border-color:var(--line-strong);transform:translateY(-1px)}
+.screen-tile.is-active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(212,107,56,.09)}
+.screen-tile.is-disabled{opacity:.38;cursor:not-allowed;transform:none}
+.screen-tile-preview{height:142px;padding:17px;background:#0d0b0a;border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.screen-tile-preview:after{content:"";position:absolute;width:120px;height:120px;border:1px solid rgba(212,107,56,.08);border-radius:50%;right:-50px;bottom:-60px}
+.screen-tile-copy{padding:15px 16px 17px}.screen-tile-copy b{display:block;font-size:16px;margin-bottom:5px}.screen-tile-copy span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+.mini-kicker{font:italic 13px Georgia,serif;color:var(--cream);margin-bottom:7px}.mini-title{font-size:20px;font-weight:900;letter-spacing:-.04em;line-height:1.05;max-width:80%}.mini-label{font-size:9px;letter-spacing:.16em;color:var(--accent-2);font-weight:800;margin-bottom:8px}.mini-qr{width:36px;height:36px;background:#fff;position:absolute;right:18px;bottom:18px;border-radius:4px}
+.mini-options{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:12px;max-width:80%}.mini-options i{height:10px;border:1px solid #3b332d;border-radius:4px;background:#171411}.mini-result-line{height:8px;width:72%;margin-top:12px;border-radius:4px;background:#312a24}.mini-result-line.short{width:48%;margin-top:6px}
+.host-flow{display:grid;grid-template-columns:auto 1fr auto 1fr auto 1fr auto;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.flow-step{display:flex;align-items:center;gap:9px;min-width:0}.flow-step>span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#2a211b;color:var(--cream);font-size:12px;font-weight:900;flex:0 0 auto}.flow-step b{display:block;font-size:12px}.flow-step small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.flow-line{height:1px;background:var(--line)}
+.host-main-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;margin-top:18px}
+.host-control-card{align-self:start}.host-primary-actions{display:flex;gap:10px;flex-wrap:wrap}.host-main-action{min-width:210px}
+.question-preview{margin-top:14px;padding:17px;border:1px solid var(--line);border-radius:16px;background:#0e0c0b;position:relative}.question-preview-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}.question-preview-title{font-size:18px;font-weight:850;line-height:1.25;padding-right:70px}.question-preview-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}.question-preview-options span{font-size:12px;color:var(--muted);padding:8px 9px;border:1px solid #2e2925;border-radius:9px}.question-preview-options b{color:var(--cream);margin-right:4px}.question-preview-time{position:absolute;right:14px;top:14px;color:var(--cream);font-size:12px}
+.host-team-meta{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:12px}.host-team-meta a{color:var(--cream);text-decoration:underline;text-decoration-color:#584638;text-underline-offset:3px}.host-progress{color:var(--accent-2)}
+.host-player-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.host-player{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:12px}.host-player button{border:0;background:none;color:inherit;padding:0;line-height:1;cursor:pointer}
+.end-user-meta{color:var(--muted);font-size:13px}.end-user-meta strong{color:var(--text)}
+@media(max-width:920px){.screen-tiles{grid-template-columns:1fr}.host-flow{display:none}.host-main-grid{grid-template-columns:1fr}.screen-tile-preview{height:120px}}
