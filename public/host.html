@@ -1,4 +1,4 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пивофэктори — ведущий</title><link rel="stylesheet" href="/styles.css"></head><body>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пивофэктори — ведущий</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/event.css"></head><body>
 <div id="splash" class="splash"><div class="splash-inner"><div class="wordmark"><span class="wordmark-main">ПИВОФЭКТОРИ</span><span class="wordmark-sub">/ CONTROL</span></div><div class="splash-line"></div></div></div>
 
 <main id="lock" class="wrap host-lock"><section class="card display-card"><div id="lockLogo" style="margin-bottom:28px"></div><div class="eyebrow">Пульт ведущего</div><h1 style="font-size:50px;margin:10px 0 18px">Вход</h1><p class="muted">Введите PIN ведущего.</p><form id="pinForm"><input id="pin" class="input" inputmode="numeric" autocomplete="current-password" placeholder="PIN" required><button class="btn primary" style="width:100%;margin-top:12px">Открыть пульт</button></form><div id="pinError" class="bad small" style="margin-top:10px"></div></section></main>
@@ -27,6 +27,10 @@
       <button type="button" class="screen-tile" data-screen-action="result">
         <div class="screen-tile-preview preview-result"><div class="mini-label">ОТВЕТ</div><div class="mini-title">Правильный вариант</div><div class="mini-result-line"></div><div class="mini-result-line short"></div></div>
         <div class="screen-tile-copy"><b>Результат</b><span>Правильный ответ и итоги команд</span></div>
+      </button>
+      <button type="button" class="screen-tile" data-screen-action="final">
+        <div class="screen-tile-preview preview-result"><div class="mini-label">ФИНАЛ ИГРЫ</div><div class="mini-title">ПОБЕДИТЕЛИ</div><div class="mini-result-line"></div><div class="mini-result-line short"></div></div>
+        <div class="screen-tile-copy"><b>Финал</b><span>Итоговый рейтинг и победившая команда</span></div>
       </button>
     </div>
 
@@ -69,4 +73,4 @@
   </section>
 </main>
 
-<script src="/socket.io/socket.io.js"></script><script type="module" src="/host.js"></script></body></html>
+<script src="/socket.io/socket.io.js"></script><script type="module" src="/host-v2.js"></script></body></html>
