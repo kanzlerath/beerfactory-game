@@ -183,7 +183,7 @@ function calculateResults() {
   );
 
   const best = ranked[0];
-  if (best) {
+  if (best && best.correct > 0) {
     const winners = ranked.filter(r => r.accuracy === best.accuracy && r.avgCorrectMs === best.avgCorrectMs);
     for (const winner of winners) {
       const team = state.teams.find(t => t.id === winner.teamId);
@@ -386,6 +386,14 @@ app.post("/api/host/round/reveal", requireHost, async (_req,res) => {
   await persist();
   io.emit("state:changed");
   res.json(hostState().round);
+});
+
+app.post("/api/host/final", requireHost, async (_req,res) => {
+  if (state.round.status === "open") return res.status(409).json({ error: "Сначала завершите вопрос" });
+  state.round.status = "final";
+  await persist();
+  io.emit("state:changed");
+  res.json({ ok: true, standings: standings() });
 });
 
 app.post("/api/host/round/clear", requireHost, async (_req,res) => {
