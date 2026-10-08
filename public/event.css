@@ -157,3 +157,10 @@ body:has(.lobby-intro){background:#0b0908}
 @media(max-width:1150px){.screen-frame{width:min(100% - 40px,1720px)}.screen-wait{gap:24px}.anniversary-number{font-size:clamp(135px,20vw,280px)}.anniversary-title{font-size:clamp(48px,7vw,93px)}}
 @media(max-width:850px){.screen-frame{width:calc(100% - 30px)}.screen-wait{grid-template-columns:1fr;gap:35px}.anniversary-number{font-size:130px}.anniversary-title{font-size:53px}.screen-join{max-width:340px;margin:0}.screen-hero .options{grid-template-columns:1fr}.public-scoreboard #leaders{grid-template-columns:repeat(2,minmax(0,1fr));max-height:260px}.screen-tiles{grid-template-columns:1fr}.screen-tile-preview{height:110px}.wrap{width:min(100% - 24px,1500px)}.player-shell{width:min(100% - 30px,630px)}}
 @media(prefers-reduced-motion:reduce){.scene-fade{animation:none!important}.player-shell .option,.screen-tile,.btn{transition:none!important}}
+
+/* Screen control: 4 equal scene previews */
+#hostApp .screen-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+.screen-frame:after{border:0;transform:none;width:auto;height:auto;right:0;bottom:0}
+#hostApp .screen-tile:disabled{opacity:.38;cursor:not-allowed;pointer-events:none}
+@media(max-width:1000px){#hostApp .screen-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){#hostApp .screen-tiles{grid-template-columns:1fr}}
