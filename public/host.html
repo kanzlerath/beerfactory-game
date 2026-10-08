@@ -1,8 +1,72 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Пивофэктори — ведущий</title><link rel="stylesheet" href="/styles.css"></head><body>
 <div id="splash" class="splash"><div class="splash-inner"><div class="wordmark"><span class="wordmark-bars"><i></i><i></i><i></i><i></i></span><span><span>ПИВОФЭКТОРИ</span><span class="wordmark-sub">CONTROL</span></span></div><div class="splash-line"></div></div></div>
+
 <main id="lock" class="wrap host-lock"><section class="card display-card"><div id="lockLogo" style="margin-bottom:28px"></div><div class="eyebrow">Пульт ведущего</div><h1 style="font-size:50px;margin:10px 0 18px">Вход</h1><p class="muted">Введите PIN ведущего.</p><form id="pinForm"><input id="pin" class="input" inputmode="numeric" autocomplete="current-password" placeholder="PIN" required><button class="btn primary" style="width:100%;margin-top:12px">Открыть пульт</button></form><div id="pinError" class="bad small" style="margin-top:10px"></div></section></main>
-<main id="hostApp" class="wrap hidden"><div class="top"><div><div id="hostLogo"></div><div class="muted small" style="margin-top:8px">Пульт ведущего</div></div><div class="row"><a class="btn" href="/join" target="_blank">Вход гостей</a><a class="btn" href="/screen" target="_blank">Экран зала</a><button id="logout" class="btn ghost">Выйти</button></div></div>
-<div class="grid grid2"><section class="card"><div class="panel-title"><div class="host-section-label"><div class="eyebrow">Команды</div><h2>Участники</h2></div><span id="teamCount" class="pill"></span></div><form id="addTeam" class="row" style="margin:16px 0 4px"><input id="teamName" class="input" placeholder="Название новой команды" maxlength="40" required><button class="btn primary">Добавить</button></form><div id="teams"></div></section>
-<section class="card display-card"><div class="host-section-label"><div class="eyebrow">Управление игрой</div><h2 style="margin-top:4px">Текущий раунд</h2></div><label class="muted small">Вопрос</label><select id="questionSelect" class="select"></select><div id="roundInfo" style="margin:16px 0"></div><div class="row"><button id="startBtn" class="btn primary">Запустить</button><button id="nextBtn" class="btn primary">Следующий</button><button id="closeBtn" class="btn">Закрыть</button><button id="revealBtn" class="btn">Показать ответ</button><button id="clearBtn" class="btn ghost">Ожидание</button></div><div id="message" class="notice hidden" style="margin-top:14px"></div><div class="join-box" style="margin-top:20px"><img class="qr-large" style="width:126px" src="/api/join-qr.svg" alt="Общий QR"><div><div class="eyebrow">QR для всего зала</div><h2 style="margin:7px 0 7px">Общий вход</h2><div class="muted small">Гость выбирает свою команду после сканирования. Отдельные QR команд остаются доступны слева.</div></div></div></section></div>
-<section class="card" style="margin-top:18px"><div class="panel-title"><div class="host-section-label"><div class="eyebrow">Счёт</div><h2>Таблица команд</h2></div><button id="resetScores" class="btn danger">Сбросить очки</button></div><div id="standings"></div></section></main>
+
+<main id="hostApp" class="wrap hidden">
+  <div class="top">
+    <div><div id="hostLogo"></div><div class="muted small" style="margin-top:8px">Пульт ведущего</div></div>
+    <div class="row"><a class="btn" href="/join" target="_blank">Вход гостей</a><a class="btn" href="/screen" target="_blank">Экран зала</a><button id="logout" class="btn ghost">Выйти</button></div>
+  </div>
+
+  <section class="card host-stage">
+    <div class="panel-title">
+      <div><div class="eyebrow">Экран зала</div><h2 style="margin:5px 0 0">Что сейчас видят гости</h2></div>
+      <div id="screenStateText" class="host-screen-state"></div>
+    </div>
+
+    <div id="screenTiles" class="screen-tiles">
+      <button type="button" class="screen-tile" data-screen-action="waiting">
+        <div class="screen-tile-preview preview-wait"><div class="mini-kicker">12 лет — полёт нормальный</div><div class="mini-title">Соберите команду</div><div class="mini-qr"></div></div>
+        <div class="screen-tile-copy"><b>Ожидание</b><span>QR, сбор команд и пауза между раундами</span></div>
+      </button>
+      <button type="button" class="screen-tile" data-screen-action="question">
+        <div class="screen-tile-preview preview-question"><div class="mini-label">ВОПРОС</div><div class="mini-title">Текст вопроса</div><div class="mini-options"><i></i><i></i><i></i><i></i></div></div>
+        <div class="screen-tile-copy"><b>Вопрос</b><span>Запускает выбранный вопрос и таймер</span></div>
+      </button>
+      <button type="button" class="screen-tile" data-screen-action="result">
+        <div class="screen-tile-preview preview-result"><div class="mini-label">ОТВЕТ</div><div class="mini-title">Правильный вариант</div><div class="mini-result-line"></div><div class="mini-result-line short"></div></div>
+        <div class="screen-tile-copy"><b>Результат</b><span>Правильный ответ и итоги команд</span></div>
+      </button>
+    </div>
+
+    <div class="host-flow">
+      <div class="flow-step"><span>1</span><div><b>Выбрать вопрос</b><small>Подготовьте следующий вопрос</small></div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><span>2</span><div><b>Запустить</b><small>Таймер стартует сразу</small></div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><span>3</span><div><b>Показать результат</b><small>После завершения времени</small></div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><span>4</span><div><b>Следующий вопрос</b><small>Или вернуть экран ожидания</small></div></div>
+    </div>
+  </section>
+
+  <div class="host-main-grid">
+    <section class="card host-control-card">
+      <div class="host-section-label"><div class="eyebrow">Раунд</div><h2 style="margin-top:4px">Управление вопросом</h2></div>
+      <label class="muted small" for="questionSelect">Подготовленный вопрос</label>
+      <select id="questionSelect" class="select"></select>
+      <div id="questionPreview" class="question-preview"></div>
+      <div id="roundInfo" style="margin:16px 0"></div>
+      <div class="host-primary-actions">
+        <button id="mainActionBtn" class="btn primary host-main-action">Запустить вопрос</button>
+        <button id="nextBtn" class="btn">Следующий вопрос</button>
+        <button id="clearBtn" class="btn ghost">Экран ожидания</button>
+      </div>
+      <div id="message" class="notice hidden" style="margin-top:14px"></div>
+    </section>
+
+    <section class="card">
+      <div class="panel-title"><div><div class="eyebrow">Команды</div><h2 style="margin:5px 0 0">Участники</h2></div><span id="teamCount" class="muted small"></span></div>
+      <form id="addTeam" class="row" style="margin:14px 0 6px"><input id="teamName" class="input" placeholder="Название новой команды" maxlength="40" required><button class="btn primary">Добавить</button></form>
+      <div id="teams"></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px">
+    <div class="panel-title"><div><div class="eyebrow">Счёт</div><h2 style="margin:5px 0 0">Таблица команд</h2></div><button id="resetScores" class="btn danger">Сбросить очки</button></div>
+    <div id="standings"></div>
+  </section>
+</main>
+
 <script src="/socket.io/socket.io.js"></script><script type="module" src="/host.js"></script></body></html>
